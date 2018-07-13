@@ -11,8 +11,7 @@ public class MemberServiceImpl implements MemberService{
 	private MemberServiceImpl() {}
 	@Override
 	public void createMember(MemberBean member) {
-		// TODO Auto-generated method stub
-		
+		MemberDAOImpl.getInstance().insertMemberBean(member);
 	}
 
 	@Override
@@ -56,7 +55,7 @@ public class MemberServiceImpl implements MemberService{
 		if(MemberDAOImpl.getInstance().login(member)!=null) {
 			flag=true;
 		}
-		System.out.println(flag);
+		
 		return  flag;
 	}
 	@Override
