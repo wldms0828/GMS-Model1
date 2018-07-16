@@ -1,7 +1,7 @@
 package dao;
 
 import java.sql.*;
-import java.util.List;
+import java.util.*;
 
 import domain.MemberBean;
 import enums.MemberQuery;
@@ -28,9 +28,52 @@ public class MemberDAOImpl implements MemberDAO {
 
 	@Override
 	public List<MemberBean> selectAllMember() {
-		List<MemberBean> list = null;
+		List<MemberBean> list= new ArrayList<>();
 		try {
+			ResultSet rs = DatabaseFactory.createDatabase(Vendor.ORACLE, DBConstant.USER_NAME, DBConstant.PASSWORD)
+					.getConnection()
+					.createStatement()
+					.executeQuery(
+							MemberQuery.SELECT_ALL.toString());
+			
+			MemberBean mem = null;
+			while(rs.next()) {
+				mem = new MemberBean();
+				mem.setUserId(rs.getString("USERID"));
+				mem.setTeamId(rs.getString("TEAMID"));
+				mem.setName(rs.getString("NAME"));
+				mem.setSsn(rs.getString("SSN"));
+				mem.setRoll(rs.getString("ROLL"));
+				mem.setPassword(rs.getString("PASSWORD"));
+				list.add(mem);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return list;
+	}
 
+	@Override
+	public List<MemberBean> selectByName(String name) {
+		List<MemberBean> list = new ArrayList<>();
+		try {
+			ResultSet rs = DatabaseFactory.createDatabase(Vendor.ORACLE, DBConstant.USER_NAME, DBConstant.PASSWORD)
+					.getConnection()
+					.createStatement()
+					.executeQuery(String.format(MemberQuery.SELECT_BY_NAME.toString(), name));
+			MemberBean mem = null;
+			while(rs.next()) {
+				mem = new MemberBean();
+				mem.setName(rs.getString("NAME"));
+				mem.setSsn(rs.getString("SSN"));
+				mem.setUserId(rs.getString("USERID"));
+				mem.setTeamId(rs.getString("TEAMID"));
+				mem.setPassword(rs.getString("PASSWORD"));
+				mem.setRoll(rs.getString("ROLL"));
+				list.add(mem);
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -39,32 +82,76 @@ public class MemberDAOImpl implements MemberDAO {
 	}
 
 	@Override
-	public List<MemberBean> selectByName(String name) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public MemberBean selectById(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		MemberBean mem = null;
+		try {
+			ResultSet rs = DatabaseFactory.createDatabase(Vendor.ORACLE, DBConstant.USER_NAME, DBConstant.PASSWORD)
+					.getConnection()
+					.createStatement()
+					.executeQuery(String.format(MemberQuery.SEARCH_BY_ID.toString(), id ));
+			while(rs.next()) {
+				mem = new MemberBean();
+				mem.setName(rs.getString("NAME"));
+				mem.setSsn(rs.getString("SSN"));
+				mem.setUserId(rs.getString("USERID"));
+				mem.setTeamId(rs.getString("TEAMID"));
+				mem.setPassword(rs.getString("PASSWORD"));
+				mem.setRoll(rs.getString("ROLL"));
+				
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return mem;
 	}
 
 	@Override
 	public int countMember() {
-		// TODO Auto-generated method stub
-		return 0;
+		int count = 0;
+		try {
+			ResultSet rs = DatabaseFactory.createDatabase(Vendor.ORACLE, DBConstant.USER_NAME, DBConstant.PASSWORD)
+						   .getConnection()
+						   .createStatement()
+						   .executeQuery(MemberQuery.COUNT_MEMBER.toString());
+			
+			while(rs.next()) {
+				count = rs.getInt("count");
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return count;
 	}
 
 	@Override
 	public void updateMember(MemberBean member) {
-		// TODO Auto-generated method stub
+		try {
+			DatabaseFactory
+			.createDatabase(Vendor.ORACLE, DBConstant.USER_NAME,DBConstant.PASSWORD)
+			.getConnection()
+			.createStatement()
+			.executeUpdate(
+					String.format(MemberQuery.UPDATE_MEMBER.toString(), member.getPassword().split("/")[1], member.getUserId(), member.getPassword().split("/")[0])
+					);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
 	@Override
 	public void deleteMember(MemberBean member) {
-		// TODO Auto-generated method stub
+		try {
+			DatabaseFactory.createDatabase(Vendor.ORACLE,DBConstant.USER_NAME , DBConstant.PASSWORD)
+			.getConnection().createStatement().executeQuery(String.format(MemberQuery.DELETE_MEMBER.toString(), member.getUserId(),member.getPassword()));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
@@ -95,14 +182,12 @@ public class MemberDAOImpl implements MemberDAO {
 				mem.setTeamId(rs.getString("TEAM_ID"));
 				mem.setPassword(rs.getString("PASSWORD"));
 				mem.setName(rs.getString("NAME"));
-				mem.setSsn(rs.getString("SSN"));
-				// System.out.println("while loop 내부:"+mem.getUserId());
+				mem.setSsn(rs.getString("SSN"));	
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		// System.out.println("login pre out ID :"+mem.getUserId());
 		return mem;
 	}
 

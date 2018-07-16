@@ -1,9 +1,8 @@
 package service;
 
-import java.util.List;
-
-import dao.MemberDAOImpl;
-import domain.MemberBean;
+import java.util.*;
+import dao.*;
+import domain.*;
 
 public class MemberServiceImpl implements MemberService{
 	private static MemberService instance = new MemberServiceImpl();
@@ -16,37 +15,34 @@ public class MemberServiceImpl implements MemberService{
 
 	@Override
 	public List<MemberBean> listMember() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return MemberDAOImpl.getInstance().selectAllMember();
 	}
 
 	@Override
 	public List<MemberBean> findMemberByName(String name) {
-		// TODO Auto-generated method stub
-		return null;
+		return MemberDAOImpl.getInstance().selectByName(name);
 	}
 
 	@Override
 	public MemberBean findMemberById(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		return MemberDAOImpl.getInstance().selectById(id);
 	}
 
 	@Override
 	public int countMember() {
-		// TODO Auto-generated method stub
-		return 0;
+		return MemberDAOImpl.getInstance().countMember();
 	}
 
 	@Override
 	public void updateMember(MemberBean member) {
-		// TODO Auto-generated method stub
+		MemberDAOImpl.getInstance().updateMember(member);
 		
 	}
 
 	@Override
 	public void deleteMember(MemberBean member) {
-		// TODO Auto-generated method stub
+		MemberDAOImpl.getInstance().deleteMember(member);
 		
 	}
 	@Override

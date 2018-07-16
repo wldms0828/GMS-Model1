@@ -3,10 +3,9 @@ package test;
 import java.sql.*;
 import java.text.*;
 import java.util.*;
-import java.util.Date;
-
-import domain.MemberBean;
+import domain.*;
 import pool.DBConstant;
+
 public class TestDAO {
 	public static TestDAO instance = new TestDAO();
 	public static TestDAO getInstance() {return instance;}
